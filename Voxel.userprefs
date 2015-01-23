@@ -1,0 +1,17 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Util\ModifyTerrain.cs">
+    <Files>
+      <File FileName="Assets\Levels\Chunk.cs" Line="1" Column="1" />
+      <File FileName="Assets\Levels\World.cs" Line="1" Column="1" />
+      <File FileName="Assets\Art\Texture.cs" Line="1" Column="1" />
+      <File FileName="Assets\Util\WorldGenerator.cs" Line="1" Column="1" />
+      <File FileName="Assets\Util\MathUtils.cs" Line="1" Column="1" />
+      <File FileName="Assets\Util\ModifyTerrain.cs" Line="20" Column="34" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
