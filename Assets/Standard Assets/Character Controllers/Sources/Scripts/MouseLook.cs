@@ -63,7 +63,7 @@ public class MouseLook : MonoBehaviour {
 	}
 	
 	void enableLook() {
-		Screen.lockCursor = true;
+		//Screen.lockCursor = true;
 		canLook = true;
 	}
 	
@@ -73,6 +73,6 @@ public class MouseLook : MonoBehaviour {
 			GetComponent<Rigidbody> ().freezeRotation = true;
 		}
 		canLook = true;
-		Screen.lockCursor = true;
+		//Screen.lockCursor = true;
 	}
 }

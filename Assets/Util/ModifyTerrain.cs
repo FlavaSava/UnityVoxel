@@ -3,16 +3,22 @@ using System.Collections;
 
 public class ModifyTerrain : MonoBehaviour {
 
+    public GameObject worldObject;
+
 	private World world;
 	private GameObject cameraGO;
+    private Vector3 activeBlock;
+    private bool acB;
 
 	void Start() {
 		world = (World)GetComponent ("World");
 		cameraGO = GameObject.FindGameObjectWithTag ("MainCamera");
+        activeBlock = Vector3.zero;        
 	}
 
 	void Update() {
 		loadChunks(cameraGO.transform.position,32,48);
+        SetActiveBlock ();
 		if (Input.GetMouseButtonDown (0)) {
 			ReplaceBlockCursor(Texture.VOID);
 		}
@@ -20,6 +26,10 @@ public class ModifyTerrain : MonoBehaviour {
 			AddBlockCursor(Texture.GRASS);
 		}
 	}
+
+    void LateUpdate () {
+        
+    }
 
 	public void loadChunks(Vector3 playerPos, float distToLoad, float distToUnload) {
 		for(int x = 0; x < world.chunks.GetLength(0); x++){
@@ -104,12 +114,11 @@ public class ModifyTerrain : MonoBehaviour {
 	
 	public void SetBlockAt(int x, int y, int z, byte block) {
 		//adds the specified block at these coordinates
-		print ("Set Block at ["+x+","+y+","+z+"] = "+block);
 		world.data [x, y, z] = block;
 		UpdateChunkAt (x, y, z);
 	}
 	
-	public void UpdateChunkAt(int x, int y, int z){
+	public void UpdateChunkAt(int x, int y, int z) {
 		//Updates the chunk containing this block
 		int updateX = Mathf.FloorToInt(x / world.chunkSize);
 		int updateY = Mathf.FloorToInt(y / world.chunkSize);
@@ -139,8 +148,25 @@ public class ModifyTerrain : MonoBehaviour {
 			world.chunks[updateX, updateY, updateZ + 1].update = true;
 		}
 
-
-		print ("Updating Chunk at [" + updateX + "," + updateY + "," + updateZ + "]");
 		world.chunks [updateX, updateY, updateZ].update = true;
 	}
+
+    public void SetActiveBlock() {
+        Ray r = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if(!Physics.Raycast(r, out hit)) {
+            return;
+        }
+        Vector3 position = hit.point;
+        position += (hit.normal * -0.5f);
+
+        int x = Mathf.RoundToInt (position.x);
+        int y = Mathf.RoundToInt (position.y);
+        int z = Mathf.RoundToInt (position.z);
+        if (x < world.worldSizeX && y < world.worldSizeY && z < world.worldSizeZ) {
+            world.data[x, y, z] += 128;
+            UpdateChunkAt(x, y, z);       
+        }
+    }
+
 }
