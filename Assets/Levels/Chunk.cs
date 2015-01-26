@@ -11,6 +11,7 @@ public class Chunk : MonoBehaviour {
 
 	//Bestimmt, ob der Chunk sich neu rendert
 	public bool update;
+    public bool containsActiveBlock; //Enthält der Chunk den Aktiven Block?
 
 	//Zugriff auf die Welt
 	public GameObject worldGO;
@@ -46,7 +47,9 @@ public class Chunk : MonoBehaviour {
 	void LateUpdate() {
 		if (update) {
 			GenerateMesh();
-			update = false;
+            if (!containsActiveBlock) {
+                update = false;
+            }		
 		}
 	}
 
@@ -126,6 +129,7 @@ public class Chunk : MonoBehaviour {
 	}
 
 	public void GenerateMesh(){		
+        containsActiveBlock = false;
 		for (int x = 0; x < world.chunkSize; x++){
 			for (int y = 0; y < world.chunkSize; y++){
 				for (int z = 0; z < world.chunkSize; z++){
@@ -179,6 +183,7 @@ public class Chunk : MonoBehaviour {
 						}
 
                         if (active) { //Aktiven Block zurücksetzten
+                            containsActiveBlock = true;
                              world.data[x + chunkX, y + chunkY, z + chunkZ] -= 128;	
                         }				
 					}					

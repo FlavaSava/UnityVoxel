@@ -5,20 +5,19 @@ public class ModifyTerrain : MonoBehaviour {
 
     public GameObject worldObject;
 
+    public int viewDistance = 5;
+
 	private World world;
 	private GameObject cameraGO;
-    private Vector3 activeBlock;
-    private bool acB;
 
 	void Start() {
 		world = (World)GetComponent ("World");
-		cameraGO = GameObject.FindGameObjectWithTag ("MainCamera");
-        activeBlock = Vector3.zero;        
+		cameraGO = GameObject.FindGameObjectWithTag ("MainCamera");     
 	}
 
 	void Update() {
 		loadChunks(cameraGO.transform.position,32,48);
-        SetActiveBlock ();
+        MarkActiveBlock ();
 		if (Input.GetMouseButtonDown (0)) {
 			ReplaceBlockCursor(Texture.VOID);
 		}
@@ -75,23 +74,19 @@ public class ModifyTerrain : MonoBehaviour {
 	
 	public void ReplaceBlockCursor(byte block){
 		//Replaces the block specified where the mouse cursor is pointing
-		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-		RaycastHit hit;
-		if (Physics.Raycast (ray, out hit)) {
-			ReplaceBlockAt(hit, block);
-			Debug.DrawLine(ray.origin, ray.origin + (ray.direction * hit.distance), Color.green, 2);
-		}
+        Vector3 focusedBlock = GetFocusedBlock ();
+        if (Vector3.Distance (focusedBlock, cameraGO.transform.position) <= viewDistance) {
+            SetBlockAt (focusedBlock, block);
+        }	
 	}
 	
-	public void AddBlockCursor( byte block){
+	public void AddBlockCursor(byte block){
 		//Adds the block specified where the mouse cursor is pointing
-		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-		RaycastHit hit;
-		if (Physics.Raycast (ray, out hit)) {
-			AddBlockAt(hit, block);
-			Debug.DrawLine(ray.origin, ray.origin + (ray.direction * hit.distance), Color.green, 2);
-		}
-	}
+		Vector3 focusedBlock = GetBlockNextToFocused();
+        if (Vector3.Distance (focusedBlock, cameraGO.transform.position) <= viewDistance) {
+            SetBlockAt(focusedBlock, block);
+	    }
+    }
 	
 	public void ReplaceBlockAt(RaycastHit hit, byte block) {
 		//removes a block at these impact coordinates, you can raycast against the terrain and call this with the hit.point
@@ -114,9 +109,11 @@ public class ModifyTerrain : MonoBehaviour {
 	
 	public void SetBlockAt(int x, int y, int z, byte block) {
 		//adds the specified block at these coordinates
-		world.data [x, y, z] = block;
-		UpdateChunkAt (x, y, z);
-	}
+        if (x < world.worldSizeX && y < world.worldSizeY && z < world.worldSizeZ) {
+            world.data [x, y, z] = block;
+		    UpdateChunkAt (x, y, z);
+	    }
+    }
 	
 	public void UpdateChunkAt(int x, int y, int z) {
 		//Updates the chunk containing this block
@@ -151,22 +148,47 @@ public class ModifyTerrain : MonoBehaviour {
 		world.chunks [updateX, updateY, updateZ].update = true;
 	}
 
-    public void SetActiveBlock() {
-        Ray r = Camera.main.ScreenPointToRay(Input.mousePosition);
+    public void MarkActiveBlock() {
+        Vector3 focusedBlock = GetFocusedBlock();
+
+        if (Vector3.Distance (focusedBlock, cameraGO.transform.position) <= viewDistance) {
+            if (focusedBlock.x < world.worldSizeX && focusedBlock.y < world.worldSizeY && focusedBlock.z < world.worldSizeZ) {
+                world.data[(int)focusedBlock.x, (int)focusedBlock.y, (int)focusedBlock.z] += 128;
+                UpdateChunkAt ((int)focusedBlock.x, (int)focusedBlock.y, (int)focusedBlock.z);       
+            }
+        }
+    }
+
+    public Vector3 GetFocusedBlock () {
+        Ray r = Camera.main.ScreenPointToRay (Input.mousePosition);
         RaycastHit hit;
-        if(!Physics.Raycast(r, out hit)) {
-            return;
+        if (!Physics.Raycast (r, out hit)) {
+            return new Vector3(world.worldSizeX, world.worldSizeY, world.worldSizeZ);
         }
         Vector3 position = hit.point;
         position += (hit.normal * -0.5f);
 
-        int x = Mathf.RoundToInt (position.x);
-        int y = Mathf.RoundToInt (position.y);
-        int z = Mathf.RoundToInt (position.z);
-        if (x < world.worldSizeX && y < world.worldSizeY && z < world.worldSizeZ) {
-            world.data[x, y, z] += 128;
-            UpdateChunkAt(x, y, z);       
+        position.x = Mathf.RoundToInt (position.x);
+        position.y = Mathf.RoundToInt (position.y);
+        position.z = Mathf.RoundToInt (position.z); 
+         
+        return position;  
+    }
+
+    public Vector3 GetBlockNextToFocused () {
+        Ray r = Camera.main.ScreenPointToRay (Input.mousePosition);
+        RaycastHit hit;
+        if (!Physics.Raycast (r, out hit)) {
+            return new Vector3 (world.worldSizeX, world.worldSizeY, world.worldSizeZ);
         }
+        Vector3 position = hit.point;
+        position += (hit.normal * 0.5f);
+
+        position.x = Mathf.RoundToInt (position.x);
+        position.y = Mathf.RoundToInt (position.y);
+        position.z = Mathf.RoundToInt (position.z);
+
+        return position;
     }
 
 }
