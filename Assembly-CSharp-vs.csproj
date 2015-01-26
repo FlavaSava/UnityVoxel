@@ -39,18 +39,16 @@
 	<Reference Include="System.Core" />
 	<Reference Include="System.Xml.Linq" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>D:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>D:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Art\Texture.cs" />
-     <Compile Include="Assets\Items\Item.cs" />
      <Compile Include="Assets\Levels\Chunk.cs" />
      <Compile Include="Assets\Levels\World.cs" />
-     <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\UI\Fadenkreuz.cs" />
      <Compile Include="Assets\UI\Inventory.cs" />
      <Compile Include="Assets\Util\MathUtils.cs" />
@@ -59,7 +57,7 @@
      <Compile Include="Assets\Util\WorldGenerator.cs" />
      <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
  <Reference Include="Assembly-UnityScript-firstpass">
- <HintPath>C:/Users/lucash/Documents/UnityProjects/Voxel/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
+ <HintPath>C:/Users/Public/Documents/Unity Projects/Voxel/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
